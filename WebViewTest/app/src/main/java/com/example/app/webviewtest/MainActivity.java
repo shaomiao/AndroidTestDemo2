@@ -35,6 +35,8 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -73,28 +75,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendRequestWithOkHttp2() {
-        OkhttpUtil.asynPost("http://localhost:9090/TomcatTest/test", "{'name':'shaomiao'}", new OkhttpUtil.ResultCallback<String>() {
-            @Override
-            public void onError(Request request, Exception e) {
-                System.out.println("错误了");
-            }
+//        OkhttpUtil.asynPost("http://localhost:9090/TomcatTest/test", "{'name':'shaomiao'}", new OkhttpUtil.ResultCallback<String>() {
+//            @Override
+//            public void onError(Request request, Exception e) {
+//                System.out.println("错误了");
+//            }
+//
+//            @Override
+//            public void onResponse(String response) {
+//                System.out.println("返回了");
+//            }
+//        });
+        OkhttpUtil.asynGet("http://restapi.amap.com/v3/geocode/geo?key=4869de9f49c95c28378834bcc02c91ef&address=%E9%BB%91%E9%BE%99%E6%B1%9F%E7%9C%81%E5%93%88%E5%B0%94%E6%BB%A8%E5%B8%82%E5%8D%97%E5%B2%97%E5%8C%BA%E5%93%88%E8%A5%BF%E4%B8%87%E8%BE%BE%E5%86%99%E5%AD%97%E6%A5%BC&output=JSON",
+                new OkhttpUtil.ResultCallback<String>() {
+                    @Override
+                    public void onError(Request request, Exception e) {
 
-            @Override
-            public void onResponse(String response) {
-                System.out.println("返回了");
-            }
-        });
-        OkhttpUtil.asynGet("http://localhost:9090/TomcatTest/test", new OkhttpUtil.ResultCallback() {
-            @Override
-            public void onError(Request request, Exception e) {
-                Toast.makeText(MainActivity.this, "错误", Toast.LENGTH_SHORT).show();
-            }
+                    }
 
-            @Override
-            public void onResponse(Object response) {
-                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("main", "onResponse: "+response);
+                    }
+                });
+
     }
 
     private void sendRequestWithOkHttp() {
