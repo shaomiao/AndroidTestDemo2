@@ -84,17 +84,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 System.out.println("返回了");
             }
         });
-//        OkhttpUtil.asynGet("http://localhost:9090/TomcatTest/test", new OkhttpUtil.ResultCallback() {
-//            @Override
-//            public void onError(Request request, Exception e) {
-//                Toast.makeText(MainActivity.this, "错误", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onResponse(Object response) {
-//                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        OkhttpUtil.asynGet("http://localhost:9090/TomcatTest/test", new OkhttpUtil.ResultCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                Toast.makeText(MainActivity.this, "错误", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Object response) {
+                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void sendRequestWithOkHttp() {
