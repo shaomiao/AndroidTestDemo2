@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,16 +53,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        webView.loadUrl("http://www.baidu.com");
 
         Button sendRequest = (Button) findViewById(R.id.send_request);
+        Button sendRequest1 = (Button) findViewById(R.id.send_request1);
         responseText = (TextView) findViewById(R.id.response_text);
         sendRequest.setOnClickListener(this);
+        sendRequest1.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.send_request) {
-            // sendRequestWithHttpURLConnection();
-            sendRequestWithOkHttp();
+        switch (view.getId()) {
+            case R.id.send_request:
+                // sendRequestWithHttpURLConnection();
+                sendRequestWithOkHttp();
+                break;
+            case R.id.send_request1:
+                sendRequestWithOkHttp2();
+                break;
         }
+    }
+
+    private void sendRequestWithOkHttp2() {
+        OkhttpUtil.asynPost("http://localhost:9090/TomcatTest/test", "{'name':'shaomiao'}", new OkhttpUtil.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                System.out.println("错误了");
+            }
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("返回了");
+            }
+        });
+//        OkhttpUtil.asynGet("http://localhost:9090/TomcatTest/test", new OkhttpUtil.ResultCallback() {
+//            @Override
+//            public void onError(Request request, Exception e) {
+//                Toast.makeText(MainActivity.this, "错误", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onResponse(Object response) {
+//                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void sendRequestWithOkHttp() {
