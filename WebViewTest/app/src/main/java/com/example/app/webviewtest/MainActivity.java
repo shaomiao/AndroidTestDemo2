@@ -1,11 +1,14 @@
 package com.example.app.webviewtest;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,7 +28,12 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -37,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView responseText;
 
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +60,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         responseText = (TextView) findViewById(R.id.response_text);
         sendRequest.setOnClickListener(this);
         sendRequest1.setOnClickListener(this);
+        new Thread(){
+            @Override
+            public void run() {
+                getWebsiteDatetime("http://www.baidu.com", new HttpCallbackListener() {
+                    @Override
+                    public void onFinish(Date response) {
+                        Log.e(TAG, "onFinish: "+response );
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }.start();
     }
+
+    private static String getWebsiteDatetime(String webUrl){
+        try {
+            URL url = new URL(webUrl);// 取得资源对象
+            URLConnection uc = url.openConnection();// 生成连接对象
+            uc.connect();// 发出连接
+            long ld = uc.getDate();// 读取网站日期时间
+            Date date = new Date(ld);// 转换为标准时间对象
+            TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);// 输出北京时间
+            sdf.setTimeZone(timeZone);
+            return sdf.format(date);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static void getWebsiteDatetime(final String webUrl , final HttpCallbackListener listener){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(webUrl);// 取得资源对象
+                    URLConnection uc = url.openConnection();// 生成连接对象
+                    uc.connect();// 发出连接
+                    long ld = uc.getDate();// 读取网站日期时间
+                    Date date = new Date(ld);// 转换为标准时间对象
+                    TimeZone timeZone = TimeZone.getTimeZone("Asia/Shanghai");
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.CHINA);// 输出北京时间
+                    sdf.setTimeZone(timeZone);
+                    listener.onFinish(date);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    listener.onError(e);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    listener.onError(e);
+                }
+            }
+        }).start();
+
+    }
+
+    public interface HttpCallbackListener {
+
+        void onFinish(Date response);
+
+        void onError(Exception e);
+    }
+
+
 
     @Override
     public void onClick(View view) {
@@ -114,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }).start();
     }
+
 
     private void sendRequestWithHttpURLConnection() {
         // 开启线程来发起网络请求
